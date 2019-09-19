@@ -24,11 +24,18 @@ if (outcome %in% "heart attack") {
   if (num %in% "worst") {
      f <-na.omit(attack)
      t <- split(f, f[2])
-     o <- t[["MD"]]
+     o <- t[[state]]
      done <- o[order(o[2], o[3], o[1]), ]
     nr <-nrow(o)        
     done$Hospital.Name[nr]
-      }
+  }
+  else if (num %in% "best") { 
+    f <-na.omit(attack)
+    t <- split(f, f[2])
+    o <- t[[state]]
+    done <- o[order(o[2] , o[3], o[1]), ]
+    done$Hospital.Name[1]
+  }
       else {
         f <-na.omit(attack)
         t <- split(f, f[2])
@@ -48,6 +55,13 @@ else if (outcome %in% "heart failure") {
     nr <-nrow(o)        
     done$Hospital.Name[nr]
   }
+  else if (num %in% "best") { 
+    f <-na.omit(failure)
+    t <- split(f, f[2])
+    o <- t[[state]]
+    done <- o[order(o[2] , o[3], o[1]), ]
+    done$Hospital.Name[1]
+  }
   else {
     f <-na.omit(failure)
     t <- split(f, f[2])
@@ -66,6 +80,13 @@ else if (outcome %in% "pneumonia") {
     done <- o[order(o[2], o[3], o[1]), ]
     nr <-nrow(o)        
     done$Hospital.Name[nr]
+  }
+  else if (num %in% "best") { 
+    f <-na.omit(pneumonia)
+    t <- split(f, f[2])
+    o <- t[[state]]
+    done <- o[order(o[2] , o[3], o[1]), ]
+    done$Hospital.Name[1]
   }
   else {
     f <-na.omit(pneumonia)
