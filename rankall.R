@@ -12,40 +12,108 @@ rankall  <- function(outcome, num = "best") {
   out <- c("heart attack", "heart failure", "pneumonia")
   
   ## Check that state and outcome are valid
-  if(!(state %in% initial$State) && !(outcome %in% out)){
-    stop('invalid state and outcome')
-  }
-  else if (!(state %in% initial$State)){
-    stop('invalid state' )
-  }
-  else if (!(outcome %in% out)){
+  if (!(outcome %in% out)){
     stop( 'invalid outcome')
   }
   
   ## Return hospital name in that state with the given rank
   ## 30-day death rate
-order_worst <- function(x){ 
+  if (outcome %in% "heart attack") {
+  order_worst <- function(x){ 
   x[order(x$State, x$Attack30DayMortality, x$Hospital, decreasing = c(TRUE, FALSE, FALSE)), ]
   }
 order_best <- function(x){  
   x[order(x$State, x$Attack30DayMortality, x$Hospital), ]
 }
-first <- function(x){
-  s <- x[1]
-  
-}  
+
 if (num %in% "worst") {    
   f <-na.omit(attack)
   t <- split(f, f[2])
   o <- lapply(t, order_worst)
-  done <- lapply(unlist( o, recursive = FALSE), function(x) x[[1]])
-  done
+  done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+ done[,c(1,2)]
   }
 else if (num %in% "best") {    
   f <-na.omit(attack)
   t <- split(f, f[2])
-o <- sapply(t, first)
+  o <- lapply(t, order_best)
+  done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+  done[,c(1,2)]
+}
+else {
+  f <-na.omit(attack)
+  t <- split(f, f[2])
+  o <- lapply(t, order_best)
+  done <- do.call(rbind, lapply(o, function(x) {x[num,1:3]}))
+  done[,c(1,2)]
+  
+}
 
 }
-f<-c(t$WY$Hospital, t$WY$Attack30DayMortality)
-f
+
+else if (outcome %in% "heart failure") {
+  order_worst <- function(x){ 
+  x[order(x$State, x$Failure30DayMortality, x$Hospital, decreasing = c(TRUE, FALSE, FALSE)), ]
+}
+order_best <- function(x){  
+  x[order(x$State, x$Failure30DayMortality, x$Hospital), ]}
+  if (num %in% "worst") {    
+    f <-na.omit(failure)
+    t <- split(f, f[2])
+    o <- lapply(t, order_worst)
+    done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+    done[,c(1,2)]
+  }
+  else if (num %in% "best") {    
+    f <-na.omit(failure)
+    t <- split(f, f[2])
+    o <- lapply(t, order_best)
+    done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+    done[,c(1,2)]
+  }
+  else {
+    f <-na.omit(failure)
+    t <- split(f, f[2])
+    o <- lapply(t, order_best)
+    done <- do.call(rbind, lapply(o, function(x) {x[num,1:3]}))
+    done[,c(1,2)]
+  }
+  
+}
+
+else if (outcome %in% "pneumonia") {
+  order_worst <- function(x){ 
+  x[order(x$State, x$Pneumonia30DayMoraltiy, x$Hospital, decreasing = c(TRUE, FALSE, FALSE)), ]
+}
+order_best <- function(x){  
+  x[order(x$State, x$Pneumonia30DayMoraltiy, x$Hospital), ]
+  if (num %in% "worst") {    
+    f <-na.omit(pneumonia)
+    t <- split(f, f[2])
+    o <- lapply(t, order_worst)
+    done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+    done[,c(1,2)]
+  }
+  else if (num %in% "best") {    
+    f <-na.omit(pneumonia)
+    t <- split(f, f[2])
+    o <- lapply(t, order_best)
+    done <- do.call(rbind, lapply(o, function(x) {x[1,1:3]}))
+    done[,c(1,2)]
+  }
+  else {
+    f <-na.omit(pneumonia)
+    t <- split(f, f[2])
+    o <- lapply(t, order_best)
+    done <- do.call(rbind, lapply(o, function(x) {num[1,1:3]}))
+    done[,c(1,2)]
+  }
+  
+}
+}
+} 
+head(rankall("heart attack", 20), 10)
+
+tail(rankall("heart failure", "worst"), 3)
+
+tail(rankall("heart failure"), 10) 
